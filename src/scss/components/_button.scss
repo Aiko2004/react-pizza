@@ -8,7 +8,9 @@
   padding: 10px 20px;
   min-width: 100px;
   text-align: center;
+  text-transform: capitalize;
   outline: none;
+  color: gray(194);
   cursor: pointer;
   transition: background-color $duration ease-in-out, border-color $duration ease-in-out;
   border: 1px solid transparent;
@@ -33,6 +35,11 @@
   &:active {
     background-color: darken($orange, 12%);
     transform: translateY(1px);
+  }
+
+  &--center {
+    display: block;
+    margin: 30px auto auto;
   }
 
   &--circle {
