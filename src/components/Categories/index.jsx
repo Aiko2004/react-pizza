@@ -1,8 +1,8 @@
 import {useEffect, useState} from 'react';
 import classnames from 'classnames'
 
-const Categories = () => {
-    const categories = ['Все', 'Мясные', 'Вегетарианская', 'Гриль', 'Острые', 'Закрытые']
+const Categories = ({ category, onClickCategory, onCategoryChange }) => {
+    const categories = ['Все', 'Мясные', 'Вегетарианские', 'Гриль', 'Острые', 'Закрытые']
 
     const [activeIndex, setActiveIndex] = useState(() => {
         // При первом рендере читаем сохранённый индекс
@@ -10,22 +10,25 @@ const Categories = () => {
         return savedIndex !== null ? Number(savedIndex) : 0;
     })
 
+
     useEffect(() => {
+        onClickCategory(activeIndex)
+        onCategoryChange(categories[activeIndex])
         sessionStorage.setItem('categoryIndex', activeIndex);
-    }, [activeIndex])
+    }, [activeIndex, onClickCategory])
 
 
     return (
         <div className="categories">
             <ul>
                 {
-                    categories.map((category, index) =>
+                    categories.map((categoryName, index) =>
                         <li
                             key={index}
                             onClick={() => setActiveIndex(index)}
-                            className={classnames({'active': activeIndex === index}) || undefined}
+                            className={classnames({'active': category === index}) || undefined}
                         >
-                            {category}
+                            {categoryName}
                         </li>
                     )}
             </ul>

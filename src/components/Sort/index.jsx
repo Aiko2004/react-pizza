@@ -1,19 +1,28 @@
 import { useState, useEffect, useRef } from "react";
 import classnames from "classnames";
 
-const Sort = () => {
-    const sortingTypes = ["популярности", "цене", "алфавиту"];
+const Sort = ({ sortType, onClickSort }) => {
+    const sortingTypes = [
+        { name: "популярности", sort: "rating", order: 'desc' },
+        { name: "цене", sort: "price", order: 'desc'},
+        { name: "алфавиту", sort: "title", order: 'asc' }
+    ];
 
-    // При первом рендере достаём из sessionStorage или берём первый вариант
-    const [selectedSortType, setSelectedSortType] = useState(
-        sessionStorage.getItem("selectedSortType") || sortingTypes[0]
-    );
     const [isOpen, setIsOpen] = useState(false);
     const sortRef = useRef();
 
+    // Если sortType пустой (при первом рендере), ставим дефолт
     useEffect(() => {
-        sessionStorage.setItem("selectedSortType", selectedSortType);
-    }, [selectedSortType]);
+        if (!sortType) {
+            onClickSort(sortingTypes[0]);
+        }
+    }, [sortType]);
+
+    useEffect(() => {
+        if (sortType) {
+            sessionStorage.setItem("sortType", JSON.stringify(sortType));
+        }
+    }, [sortType]);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -45,7 +54,9 @@ const Sort = () => {
                     />
                 </svg>
                 <b>Сортировка по:</b>
-                <span onClick={() => setIsOpen(!isOpen)}>{selectedSortType}</span>
+                <span onClick={() => setIsOpen(!isOpen)}>
+                    {sortType?.name || "популярности"}
+                </span>
             </div>
             {isOpen && (
                 <div className="sort__popup">
@@ -53,13 +64,13 @@ const Sort = () => {
                         {sortingTypes.map((item, i) => (
                             <li
                                 key={i}
-                                className={classnames({ active: selectedSortType === item })}
+                                className={classnames({ active: sortType?.name === item.name })}
                                 onClick={() => {
-                                    setSelectedSortType(item);
+                                    onClickSort(item);
                                     setIsOpen(false);
                                 }}
                             >
-                                {item}
+                                {item.name}
                             </li>
                         ))}
                     </ul>
