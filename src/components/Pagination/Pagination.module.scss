@@ -1,0 +1,37 @@
+@use "../../scss/variables" as *;
+
+.root {
+  display: flex;
+  column-gap: 10px;
+  li {
+    display: inline-flex;
+
+    a {
+      display: inline-flex;
+      color: $orange;
+      justify-content: center;
+      align-items: center;
+      width: 40px;
+      height: 40px;
+      border: 1px solid $orange;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: all 0.25s;
+      &:hover {
+        background-color: $orange;
+        color: #fff;
+      }
+    }
+  }
+
+  :global {
+    li {
+      &.selected {
+        a {
+          background-color: $orange;
+          color: #fff;
+        }
+      }
+    }
+  }
+}

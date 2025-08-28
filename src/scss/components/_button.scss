@@ -1,5 +1,5 @@
-@use '../variables' as *;
-@use '../libs/normalize' as *;
+@use "../variables" as *;
+@use "../libs/normalize" as *;
 
 .button {
   display: inline-block;
@@ -12,7 +12,9 @@
   outline: none;
   color: gray(194);
   cursor: pointer;
-  transition: background-color $duration ease-in-out, border-color $duration ease-in-out;
+  transition:
+    background-color $duration ease-in-out,
+    border-color $duration ease-in-out;
   border: 1px solid transparent;
   @include noselect();
 

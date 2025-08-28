@@ -1,8 +1,8 @@
-@use './fonts';
-@use './variables' as *;
-@use './libs/normalize' as *;
+@use "./fonts";
+@use "./variables" as *;
+@use "./libs/normalize" as *;
 
-@use './components/all';
+@use "./components/all";
 
 body {
   background-color: $background;
