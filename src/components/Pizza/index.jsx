@@ -1,18 +1,18 @@
-import { useState, useMemo } from "react";
-import classNames from "classnames";
+import { useState, useMemo } from 'react'
+import classNames from 'classnames'
 
 const Pizza = ({ title, image, price, sizes, types }) => {
-  const generalTypes = ["тонкое", "традиционное"];
+  const generalTypes = ['тонкое', 'традиционное']
 
-  const [pizzaCount, setPizzaCount] = useState(0);
-  const [selectedSize, setSelectedSize] = useState(0);
-  const [selectedType, setSelectedType] = useState(0);
+  const [pizzaCount, setPizzaCount] = useState(0)
+  const [selectedSize, setSelectedSize] = useState(0)
+  const [selectedType, setSelectedType] = useState(0)
 
   // Мемоизируем преобразование типов
   const sortedTypes = useMemo(
     () => (types || []).map((i) => generalTypes[i]),
     [types],
-  );
+  )
 
   return (
     <div className="pizza-block">
@@ -69,7 +69,7 @@ const Pizza = ({ title, image, price, sizes, types }) => {
         </button>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Pizza;
+export default Pizza

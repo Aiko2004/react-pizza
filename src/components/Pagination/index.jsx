@@ -1,8 +1,8 @@
-import ReactPaginate from "react-paginate";
-import styles from "./Pagination.module.scss";
+import ReactPaginate from 'react-paginate'
+import styles from './Pagination.module.scss'
 
 const Pagination = ({ currentPage, setCurrentPage }) => {
-  const pgRangeDisplayed = 8;
+  const pgRangeDisplayed = 8
   return (
     <ReactPaginate
       className={styles.root}
@@ -14,7 +14,7 @@ const Pagination = ({ currentPage, setCurrentPage }) => {
       renderOnZeroPageCount={null}
       onPageChange={(e) => setCurrentPage(e.selected + 1)}
     />
-  );
-};
+  )
+}
 
-export default Pagination;
+export default Pagination

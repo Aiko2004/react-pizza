@@ -1,5 +1,5 @@
-import NotFoundBlock from "../components/NotFoundBlock";
-import { Link } from "react-router-dom";
+import NotFoundBlock from '../components/NotFoundBlock'
+import { Link } from 'react-router-dom'
 
 const NotFound = () => {
   return (
@@ -11,7 +11,7 @@ const NotFound = () => {
         </button>
       </Link>
     </>
-  );
-};
+  )
+}
 
-export default NotFound;
+export default NotFound

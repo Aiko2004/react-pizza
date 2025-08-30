@@ -1,4 +1,4 @@
-import styles from "./NotFoundBlock.module.scss";
+import styles from './NotFoundBlock.module.scss'
 
 const NotFoundBlock = () => {
   return (
@@ -9,7 +9,7 @@ const NotFoundBlock = () => {
         404 страница не найдена
       </h1>
     </>
-  );
-};
+  )
+}
 
-export default NotFoundBlock;
+export default NotFoundBlock

@@ -1,17 +1,17 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react'
 
 export function useDebounced(value, delay = 500) {
-  const [debouncedValue, setDebouncedValue] = useState(value);
+  const [debouncedValue, setDebouncedValue] = useState(value)
 
   useEffect(() => {
     const handler = setTimeout(() => {
-      setDebouncedValue(value);
-    }, delay);
+      setDebouncedValue(value)
+    }, delay)
 
     return () => {
-      clearTimeout(handler); // отменяем таймер при новом вводе
-    };
-  }, [value, delay]);
+      clearTimeout(handler) // отменяем таймер при новом вводе
+    }
+  }, [value, delay])
 
-  return debouncedValue;
+  return debouncedValue
 }

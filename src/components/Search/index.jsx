@@ -1,6 +1,10 @@
-import styles from "./Search.module.scss";
+import { useContext } from 'react'
+import { SearchContext } from '../../App.jsx'
+import styles from './Search.module.scss'
 
-const Search = ({ searchValue, setSearchValue }) => {
+const Search = () => {
+  const { searchValue, setSearchValue } = useContext(SearchContext)
+
   return (
     <div className={styles.root}>
       <svg
@@ -28,7 +32,7 @@ const Search = ({ searchValue, setSearchValue }) => {
       {searchValue && (
         <svg
           className={styles.close}
-          onClick={() => setSearchValue("")}
+          onClick={() => setSearchValue('')}
           viewBox="0 0 32 32"
           xmlns="http://www.w3.org/2000/svg"
           width="20"
@@ -45,7 +49,7 @@ const Search = ({ searchValue, setSearchValue }) => {
         </svg>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default Search;
+export default Search
