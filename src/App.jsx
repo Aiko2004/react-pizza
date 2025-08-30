@@ -1,22 +1,22 @@
-import { Routes, Route } from "react-router-dom";
-import { createContext, useState } from "react";
+import { Routes, Route } from 'react-router-dom'
+import { createContext, useState } from 'react'
 
-import Header from "./components/Header";
-import Home from "./pages/Home.jsx";
-import Cart from "./pages/Cart.jsx";
-import NotFound from "./pages/NotFound.jsx";
+import Header from './components/Header'
+import Home from './pages/Home.jsx'
+import Cart from './pages/Cart.jsx'
+import NotFound from './pages/NotFound.jsx'
 
-import "./scss/app.scss";
+import './scss/app.scss'
 
-const SearchContext = createContext();
+export const SearchContext = createContext()
 
 function App() {
-  const [searchValue, setSearchValue] = useState("");
+  const [searchValue, setSearchValue] = useState('')
 
   return (
     <div className="wrapper">
-      <SearchContext.Provider value={{searchValue, setSearchValue}}>
-        <Header searchValue={searchValue} setSearchValue={setSearchValue} />
+      <SearchContext.Provider value={{ searchValue, setSearchValue }}>
+        <Header />
         <div className="content">
           <div className="container">
             <Routes>
@@ -28,7 +28,7 @@ function App() {
         </div>
       </SearchContext.Provider>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
