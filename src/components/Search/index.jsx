@@ -1,9 +1,43 @@
-import { useContext } from 'react'
+import { useContext, useRef, useState, useEffect, memo, useCallback } from 'react'
+import { useDebounce } from '../../hooks/useDebounce.js'
 import { SearchContext } from '../../App.jsx'
 import styles from './Search.module.scss'
 
+const ClearIcon = memo(({size = 24, color = "currentColor", onClickClear, ...props}) => (
+  <svg
+    className={styles.close}
+    onClick={onClickClear}
+    viewBox="0 0 32 32"
+    xmlns="http://www.w3.org/2000/svg"
+    width={size}
+    height={size}
+    stroke={color}
+    strokeWidth="2"
+    strokeLinecap="round"
+  >
+    <title>Очистить</title>
+    <g id="cross">
+      <line x1="7" x2="25" y1="7" y2="25" />
+      <line x1="7" x2="25" y1="25" y2="7" />
+    </g>
+  </svg>
+))
+
 const Search = () => {
-  const { searchValue, setSearchValue } = useContext(SearchContext)
+  const { setSearchValue } = useContext(SearchContext)
+  const [value, setValue] = useState('')
+  const debouncedValue = useDebounce(value, 500) // ждём 500 мс перед обновлением
+  const inputRef = useRef(undefined)
+
+  useEffect(() => {
+    setSearchValue(debouncedValue) // обновляем глобальный поиск только после паузы
+  }, [debouncedValue, setSearchValue])
+
+  const onClickClear = useCallback(() => {
+    setValue('')
+    setSearchValue('')
+    inputRef.current?.focus()
+  }, [setSearchValue])
 
   return (
     <div className={styles.root}>
@@ -23,31 +57,14 @@ const Search = () => {
         <line x1="21" x2="16.65" y1="21" y2="16.65" />
       </svg>
       <input
+        ref={inputRef}
         className={styles.input}
         type="text"
         placeholder="Поиск пиццы..."
-        value={searchValue}
-        onChange={(e) => setSearchValue(e.target.value)}
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
       />
-      {searchValue && (
-        <svg
-          className={styles.close}
-          onClick={() => setSearchValue('')}
-          viewBox="0 0 32 32"
-          xmlns="http://www.w3.org/2000/svg"
-          width="20"
-          height="20"
-          stroke="black" // цвет линий
-          strokeWidth="2" // толщина
-          strokeLinecap="round" // закруглённые концы
-        >
-          <title>Очистить</title>
-          <g id="cross">
-            <line x1="7" x2="25" y1="7" y2="25" />
-            <line x1="7" x2="25" y1="25" y2="7" />
-          </g>
-        </svg>
-      )}
+      {value && <ClearIcon size={20} color="black" onClickClear={onClickClear} />}
     </div>
   )
 }

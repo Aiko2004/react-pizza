@@ -1,16 +1,16 @@
 import { useEffect } from 'react'
 import classnames from 'classnames'
 
-const Categories = ({ category, onClickCategory, onCategoryChange }) => {
-  const categories = [
-    'Все',
-    'Мясные',
-    'Вегетарианские',
-    'Гриль',
-    'Острые',
-    'Закрытые',
-  ]
+const categories = [
+  'Все',
+  'Мясные',
+  'Вегетарианские',
+  'Гриль',
+  'Острые',
+  'Закрытые',
+]
 
+const Categories = ({ category, onClickCategory, onCategoryChange }) => {
   // при первом рендере — достаём сохранённую категорию из sessionStorage
   useEffect(() => {
     const savedIndex = sessionStorage.getItem('categoryIndex')

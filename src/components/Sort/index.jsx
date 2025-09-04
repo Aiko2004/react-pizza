@@ -1,11 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import classnames from 'classnames'
 
-const sortingTypes = [
-  { name: 'популярности', sort: 'rating', order: 'desc' },
-  { name: 'цене', sort: 'price', order: 'desc' },
-  { name: 'алфавиту', sort: 'title', order: 'asc' },
-]
+import { sortingTypes } from '../../config/sortingTypes.js'
 
 const Sort = ({ sortType, onClickSort }) => {
   const [isOpen, setIsOpen] = useState(false)

@@ -1,21 +1,45 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { setCategoryId, setSortType } from '../store/slices/filterSlice.js'
+import axios from 'axios'
+import qs from 'qs'
+import { useNavigate } from 'react-router-dom'
+
+import { setCategoryId, setSortType, setCurrentPage, setFilters } from '../store/slices/filterSlice.js'
 
 import Categories from '../components/Categories/index.jsx'
 import Sort from '../components/Sort/index.jsx'
 import Skeleton from '../components/Pizza/Skeleton.jsx'
 import Pizza from '../components/Pizza/index.jsx'
 import Pagination from '../components/Pagination/index.jsx'
+import { sortingTypes } from '../config/sortingTypes.js'
 
 const Home = ({ searchValue }) => {
+  const navigate = useNavigate()
   const dispatch = useDispatch()
   const [isLoading, setIsLoading] = useState(true)
   const [pizzas, setPizzas] = useState([])
   const categoryId = useSelector((state) => state.filter.categoryId)
   const [categoryName, setCategoryName] = useState('Все')
-  const [currentPage, setCurrentPage] = useState(1)
+  const currentPage = useSelector((state) => state.filter.currentPage)
   const sortType = useSelector((state) => state.filter.sort)
+
+  useEffect(() => {
+    if (window.location.search) {
+      const params = qs.parse(window.location.search.substring(1))
+
+      const sortType = sortingTypes.find(
+        (opt) => opt.sort === params.sortBy && opt.order === params.order
+      ) || sortingTypes[0]
+
+      dispatch(setFilters({
+        categoryId: Number(params.categoryId) || 0,
+        sort: sortType,
+        currentPage: Number(params.currentPage) || 1,
+      }))
+    }
+  }, [])
+
+
 
   useEffect(() => {
     setIsLoading(true)
@@ -27,21 +51,38 @@ const Home = ({ searchValue }) => {
     url.searchParams.append('sortBy', sortType.sort)
     url.searchParams.append('order', sortType.order)
 
-    fetch(url)
-      .then((res) => res.json())
-      .then((data) => {
-        setPizzas(data)
+    // fetch(url)
+    //   .then((res) => res.json())
+    //   .then((data) => {
+    //     setPizzas(data)
+    //     setIsLoading(false)
+    //   })
+
+    axios.get(url)
+      .then((res) => {
+        setPizzas(res.data)
         setIsLoading(false)
       })
   }, [categoryId, sortType, currentPage])
 
-  const onClickCategory = (id) => {
-    dispatch(setCategoryId(id))
-  }
+  useEffect(() => {
+    const queryString = qs.stringify({
+      sortBy: sortType.sort,
+      order: sortType.order,
+      categoryId: categoryId,
+      currentPage: currentPage,
+    })
+    navigate(`?${queryString}`)
+  }, [categoryId, sortType, currentPage])
 
-  const onClickSort = (sortType) => {
+
+  const onClickCategory = useCallback((id) => {
+    dispatch(setCategoryId(id))
+  }, [])
+
+  const onClickSort = useCallback((sortType) => {
     dispatch(setSortType(sortType))
-  }
+  }, [])
 
   return (
     <>
@@ -56,7 +97,7 @@ const Home = ({ searchValue }) => {
       <h2 className="content__title">{categoryName} пиццы</h2>
       <div className="content__items">
         {isLoading
-          ? [...new Array(6)].map((_, index) => <Skeleton key={index} />) // 6 скелетонов
+          ? [...new Array(12)].map((_, index) => <Skeleton key={index} />) // 6 скелетонов
           : pizzas
               ?.filter((pizza) =>
                 pizza.title.toLowerCase().includes(searchValue.toLowerCase()),
@@ -72,7 +113,7 @@ const Home = ({ searchValue }) => {
                 />
               ))}
       </div>
-      <Pagination currentPage={currentPage} setCurrentPage={setCurrentPage} />
+      <Pagination currentPage={currentPage} setCurrentPage={(page) => dispatch(setCurrentPage(page))} />
     </>
   )
 }

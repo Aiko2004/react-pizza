@@ -27,11 +27,13 @@
 }
 
 .close {
+  box-sizing: content-box;
   color: #1a1a1a;
   cursor: pointer;
   position: absolute;
   width: 18px;
   height: 18px;
-  top: 15px;
-  right: 15px;
+  top: 5px;
+  right: 5px;
+  padding: 10px;
 }

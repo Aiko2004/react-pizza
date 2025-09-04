@@ -14,6 +14,7 @@ const safeParse = (value, fallback) => {
 const initialState = {
   categoryId: Number(sessionStorage.getItem('categoryIndex')) || 0,
   sort: safeParse(sessionStorage.getItem('sortType'), DEFAULT_SORT),
+  currentPage: Number(sessionStorage.getItem('currentPage')) || 1,
 }
 
 const filterSlice = createSlice({
@@ -27,10 +28,26 @@ const filterSlice = createSlice({
     setSortType: (state, action) => {
       state.sort = action.payload
       sessionStorage.setItem('sortType', JSON.stringify(action.payload))
-    }
+    },
+    setCurrentPage: (state, action) => {
+      state.currentPage = action.payload
+      sessionStorage.setItem('currentPage', action.payload)
+    },
+    setFilters: (state, action) => {
+      const { categoryId, sort, currentPage } = action.payload
+
+      state.categoryId = categoryId !== undefined ? categoryId : state.categoryId
+      state.sort = sort || state.sort
+      console.log(sort)
+      state.currentPage = currentPage || state.currentPage
+
+      sessionStorage.setItem('categoryIndex', state.categoryId)
+      sessionStorage.setItem('sortType', JSON.stringify(state.sort))
+      sessionStorage.setItem('currentPage', state.currentPage)
+    },
   },
 })
 
-export const { setCategoryId, setSortType } = filterSlice.actions
+export const { setCategoryId, setSortType, setCurrentPage, setFilters } = filterSlice.actions
 
 export default filterSlice.reducer
