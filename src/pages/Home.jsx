@@ -1,6 +1,5 @@
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useCallback, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import axios from 'axios'
 import qs from 'qs'
 import { useNavigate } from 'react-router-dom'
 
@@ -12,17 +11,21 @@ import Skeleton from '../components/Pizza/Skeleton.jsx'
 import Pizza from '../components/Pizza/index.jsx'
 import Pagination from '../components/Pagination/index.jsx'
 import { sortingTypes } from '../config/sortingTypes.js'
+import { fetchPizzas } from '../store/slices/pizzasSlice.js'
 
 const Home = ({ searchValue }) => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
-  const [isLoading, setIsLoading] = useState(true)
-  const [pizzas, setPizzas] = useState([])
+
+  // Redux state
   const categoryId = useSelector((state) => state.filter.categoryId)
-  const [categoryName, setCategoryName] = useState('Все')
   const currentPage = useSelector((state) => state.filter.currentPage)
   const sortType = useSelector((state) => state.filter.sort)
+  const { items: pizzas, status } = useSelector((state) => state.pizza)
 
+  const [categoryName, setCategoryName] = useState('Все')
+
+  // Восстанавливаем фильтры из URL
   useEffect(() => {
     if (window.location.search) {
       const params = qs.parse(window.location.search.substring(1))
@@ -39,32 +42,12 @@ const Home = ({ searchValue }) => {
     }
   }, [])
 
-
-
+  // Загружаем пиццы из Redux thunk
   useEffect(() => {
-    setIsLoading(true)
-
-    const categoryQuery = categoryId > 0 ? `&category=${categoryId}` : ''
-    const query =
-      `https://6897aa6b250b078c20428172.mockapi.io/api/v1/pizzas?page=${currentPage}&limit=8${categoryQuery}`
-    const url = new URL(query)
-    url.searchParams.append('sortBy', sortType.sort)
-    url.searchParams.append('order', sortType.order)
-
-    // fetch(url)
-    //   .then((res) => res.json())
-    //   .then((data) => {
-    //     setPizzas(data)
-    //     setIsLoading(false)
-    //   })
-
-    axios.get(url)
-      .then((res) => {
-        setPizzas(res.data)
-        setIsLoading(false)
-      })
+    dispatch(fetchPizzas({ categoryId, sortType, currentPage }))
   }, [categoryId, sortType, currentPage])
 
+  // Синхронизация URL
   useEffect(() => {
     const queryString = qs.stringify({
       sortBy: sortType.sort,
@@ -74,7 +57,6 @@ const Home = ({ searchValue }) => {
     })
     navigate(`?${queryString}`)
   }, [categoryId, sortType, currentPage])
-
 
   const onClickCategory = useCallback((id) => {
     dispatch(setCategoryId(id))
@@ -89,29 +71,30 @@ const Home = ({ searchValue }) => {
       <div className="content__top">
         <Categories
           category={categoryId}
-          onClickCategory={(id) => onClickCategory(id)}
+          onClickCategory={onClickCategory}
           onCategoryChange={(name) => setCategoryName(name)}
         />
         <Sort sortType={sortType} onClickSort={onClickSort} />
       </div>
       <h2 className="content__title">{categoryName} пиццы</h2>
       <div className="content__items">
-        {isLoading
-          ? [...new Array(12)].map((_, index) => <Skeleton key={index} />) // 6 скелетонов
+        {status === 'loading'
+          ? [...new Array(12)].map((_, index) => <Skeleton key={index} />)
           : pizzas
-              ?.filter((pizza) =>
-                pizza.title.toLowerCase().includes(searchValue.toLowerCase()),
-              )
-              .map(({ id, title, price, imageUrl, sizes, types }) => (
-                <Pizza
-                  key={id}
-                  title={title}
-                  price={price}
-                  image={imageUrl}
-                  sizes={sizes}
-                  types={types}
-                />
-              ))}
+            ?.filter((pizza) =>
+              pizza.title.toLowerCase().includes(searchValue.toLowerCase()),
+            )
+            .map(({ id, title, price, imageUrl, sizes, types }) => (
+              <Pizza
+                key={id}
+                id={id}
+                title={title}
+                price={price}
+                image={imageUrl}
+                sizes={sizes}
+                types={types}
+              />
+            ))}
       </div>
       <Pagination currentPage={currentPage} setCurrentPage={(page) => dispatch(setCurrentPage(page))} />
     </>

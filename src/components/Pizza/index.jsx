@@ -1,14 +1,41 @@
 import { useState, useMemo } from 'react'
 import classNames from 'classnames'
+import { useSelector, useDispatch } from 'react-redux'
 
-const Pizza = ({ title, image, price, sizes, types }) => {
-  const generalTypes = ['тонкое', 'традиционное']
+import { generalTypes } from '../../config/generalTypes.js'
+import { addProduct } from '../../store/slices/cartSlice.js'
 
-  const [pizzaCount, setPizzaCount] = useState(0)
+const Pizza = ({ id, title, image, price, sizes, types }) => {
+  const dispatch = useDispatch()
+
+  // если sizes пришёл неполный, заполняем
+  if (sizes.length !== 3) {
+    sizes = [26, null, 40]
+  }
+
   const [selectedSize, setSelectedSize] = useState(0)
   const [selectedType, setSelectedType] = useState(0)
 
-  // Мемоизируем преобразование типов
+  // ищем все товары с этим id (любые размеры/типы)
+  const products = useSelector((state) => state.cart.products)
+  const cartProducts = products.filter((product) => product.id === id)
+
+  // общее количество этой пиццы
+  const pizzaCount = cartProducts.reduce((sum, p) => sum + p.pizzaCount, 0)
+
+  const onClickAdd = () => {
+    const product = {
+      id,
+      title,
+      price,
+      image,
+      type: generalTypes[selectedType],
+      size: sizes[selectedSize], // ✅ записываем не индекс, а сам размер
+    }
+    dispatch(addProduct(product))
+  }
+
+  // мемоизация типов
   const sortedTypes = useMemo(
     () => (types || []).map((i) => generalTypes[i]),
     [types],
@@ -33,15 +60,18 @@ const Pizza = ({ title, image, price, sizes, types }) => {
         </ul>
 
         <ul>
-          {sizes.map((size, i) => (
-            <li
-              key={i}
-              className={classNames({ active: selectedSize === i })}
-              onClick={() => setSelectedSize(i)}
-            >
-              {size} см.
-            </li>
-          ))}
+          {sizes.map(
+            (size, i) =>
+              size && (
+                <li
+                  key={i}
+                  className={classNames({ active: selectedSize === i })}
+                  onClick={() => setSelectedSize(i)}
+                >
+                  {size} см.
+                </li>
+              )
+          )}
         </ul>
       </div>
 
@@ -49,7 +79,7 @@ const Pizza = ({ title, image, price, sizes, types }) => {
         <div className="pizza-block__price">от {price} ₽</div>
         <button
           type="button"
-          onClick={() => setPizzaCount((prev) => prev + 1)}
+          onClick={onClickAdd}
           className="button button--outline button--add"
         >
           <svg

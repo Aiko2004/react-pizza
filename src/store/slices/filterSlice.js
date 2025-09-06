@@ -38,7 +38,6 @@ const filterSlice = createSlice({
 
       state.categoryId = categoryId !== undefined ? categoryId : state.categoryId
       state.sort = sort || state.sort
-      console.log(sort)
       state.currentPage = currentPage || state.currentPage
 
       sessionStorage.setItem('categoryIndex', state.categoryId)
