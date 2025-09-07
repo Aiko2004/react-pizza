@@ -77,26 +77,40 @@ const Home = ({ searchValue }) => {
         <Sort sortType={sortType} onClickSort={onClickSort} />
       </div>
       <h2 className="content__title">{categoryName} пиццы</h2>
-      <div className="content__items">
-        {status === 'loading'
-          ? [...new Array(12)].map((_, index) => <Skeleton key={index} />)
-          : pizzas
-            ?.filter((pizza) =>
-              pizza.title.toLowerCase().includes(searchValue.toLowerCase()),
-            )
-            .map(({ id, title, price, imageUrl, sizes, types }) => (
-              <Pizza
-                key={id}
-                id={id}
-                title={title}
-                price={price}
-                image={imageUrl}
-                sizes={sizes}
-                types={types}
-              />
-            ))}
-      </div>
-      <Pagination currentPage={currentPage} setCurrentPage={(page) => dispatch(setCurrentPage(page))} />
+      {status === 'error' ? (
+        <div className="container content content__error-info">
+          <h2>
+            Что-то пошло не так <span>😕</span>
+          </h2>
+          <p>
+            Не удалось получить питсы, попробуйте повторить позже.
+          </p>
+        </div>
+      ) : (
+        <div className="content__items">
+          {status === 'loading'
+            ? [...new Array(12)].map((_, index) => <Skeleton key={index} />)
+            : pizzas
+                ?.filter((pizza) =>
+                  pizza.title.toLowerCase().includes(searchValue.toLowerCase()),
+                )
+                .map(({ id, title, price, imageUrl, sizes, types }) => (
+                  <Pizza
+                    key={id}
+                    id={id}
+                    title={title}
+                    price={price}
+                    image={imageUrl}
+                    sizes={sizes}
+                    types={types}
+                  />
+                ))}
+        </div>
+      )}
+      <Pagination
+        currentPage={currentPage}
+        setCurrentPage={(page) => dispatch(setCurrentPage(page))}
+      />
     </>
   )
 }

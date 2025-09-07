@@ -20,6 +20,17 @@ const Pizza = ({ id, title, image, price, sizes, types }) => {
   const products = useSelector((state) => state.cart.products)
   const cartProducts = products.filter((product) => product.id === id)
 
+  const calculatedPrice = useMemo(() => {
+    let newPrice = price
+    if (sizes[selectedSize] === 30) {
+      newPrice *= 1.15
+    }
+    if (sizes[selectedSize] === 40) {
+      newPrice *= 1.65
+    }
+    return Math.round(newPrice /10) * 10 // округлил для красоты
+  }, [price, selectedSize, sizes])
+
   // общее количество этой пиццы
   const pizzaCount = cartProducts.reduce((sum, p) => sum + p.pizzaCount, 0)
 
@@ -27,7 +38,7 @@ const Pizza = ({ id, title, image, price, sizes, types }) => {
     const product = {
       id,
       title,
-      price,
+      price: calculatedPrice,
       image,
       type: generalTypes[selectedType],
       size: sizes[selectedSize], // ✅ записываем не индекс, а сам размер
@@ -76,7 +87,7 @@ const Pizza = ({ id, title, image, price, sizes, types }) => {
       </div>
 
       <div className="pizza-block__bottom">
-        <div className="pizza-block__price">от {price} ₽</div>
+        <div className="pizza-block__price">от {calculatedPrice} ₽</div>
         <button
           type="button"
           onClick={onClickAdd}

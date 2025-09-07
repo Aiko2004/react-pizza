@@ -4,11 +4,15 @@ import axios from "axios"
 // thunk для загрузки пицц
 export const fetchPizzas = createAsyncThunk(
   "pizzas/fetchPizzas",
-  async ({ categoryId, sortType, currentPage }) => {
+  async ({ categoryId, sortType, currentPage }, thunkAPI) => {
     const categoryQuery = categoryId > 0 ? `&category=${categoryId}` : ""
     const url = `https://6897aa6b250b078c20428172.mockapi.io/api/v1/pizzas?page=${currentPage}&limit=8${categoryQuery}&sortBy=${sortType.sort}&order=${sortType.order}`
 
     const { data } = await axios.get(url)
+
+    if(data.length < 1) {
+      return thunkAPI.rejectWithValue("Похоже таких пицц нет")
+    }
     return data
   }
 )
