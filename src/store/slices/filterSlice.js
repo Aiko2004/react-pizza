@@ -12,6 +12,7 @@ const safeParse = (value, fallback) => {
 }
 
 const initialState = {
+  searchValue: '',
   categoryId: Number(sessionStorage.getItem('categoryIndex')) || 0,
   sort: safeParse(sessionStorage.getItem('sortType'), DEFAULT_SORT),
   currentPage: Number(sessionStorage.getItem('currentPage')) || 1,
@@ -33,6 +34,9 @@ const filterSlice = createSlice({
       state.currentPage = action.payload
       sessionStorage.setItem('currentPage', action.payload)
     },
+    setSearchValue: (state, action) => {
+      state.searchValue = action.payload
+    },
     setFilters: (state, action) => {
       const { categoryId, sort, currentPage } = action.payload
 
@@ -47,6 +51,6 @@ const filterSlice = createSlice({
   },
 })
 
-export const { setCategoryId, setSortType, setCurrentPage, setFilters } = filterSlice.actions
+export const { setCategoryId, setSortType, setCurrentPage, setFilters, setSearchValue } = filterSlice.actions
 
 export default filterSlice.reducer

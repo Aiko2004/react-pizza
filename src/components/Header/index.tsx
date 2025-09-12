@@ -1,11 +1,14 @@
 import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
+// @ts-ignore
 import Logo from '../../assets/img/pizza-logo.svg'
 import Search from '../Search'
 import { selectCart } from '../../store/slices/cartSlice.js'
 
-const Header = () => {
+import { JSX } from 'react'
+
+const Header = (): JSX.Element => {
   const { totalCount, totalPrice } = useSelector(selectCart)
 
   return (

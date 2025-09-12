@@ -1,7 +1,8 @@
-import { useContext, useRef, useState, useEffect, memo, useCallback } from 'react'
+import { useRef, useState, useEffect, memo, useCallback } from 'react'
 import { useDebounce } from '../../hooks/useDebounce.js'
-import { SearchContext } from '../../App.jsx'
+import { setSearchValue } from '../../store/slices/filterSlice.js'
 import styles from './Search.module.scss'
+import { useDispatch } from 'react-redux'
 
 const ClearIcon = memo(({size = 24, color = "currentColor", onClickClear, ...props}) => (
   <svg
@@ -24,18 +25,18 @@ const ClearIcon = memo(({size = 24, color = "currentColor", onClickClear, ...pro
 ))
 
 const Search = () => {
-  const { setSearchValue } = useContext(SearchContext)
+  const dispatch = useDispatch()
   const [value, setValue] = useState('')
   const debouncedValue = useDebounce(value, 500) // ждём 500 мс перед обновлением
   const inputRef = useRef(undefined)
 
   useEffect(() => {
-    setSearchValue(debouncedValue) // обновляем глобальный поиск только после паузы
+    dispatch(setSearchValue(debouncedValue)) // обновляем глобальный поиск только после паузы
   }, [debouncedValue, setSearchValue])
 
   const onClickClear = useCallback(() => {
     setValue('')
-    setSearchValue('')
+    dispatch(setSearchValue(''))
     inputRef.current?.focus()
   }, [setSearchValue])
 

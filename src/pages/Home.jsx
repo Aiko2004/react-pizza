@@ -1,9 +1,10 @@
-import { useEffect, useCallback, useState } from 'react'
+import { useEffect, useCallback, useMemo, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import qs from 'qs'
 import { useNavigate } from 'react-router-dom'
 
 import { setCategoryId, setSortType, setCurrentPage, setFilters } from '../store/slices/filterSlice.js'
+import { fetchPizzas } from '../store/slices/pizzasSlice.js'
 
 import Categories from '../components/Categories/index.jsx'
 import Sort from '../components/Sort/index.jsx'
@@ -11,17 +12,18 @@ import Skeleton from '../components/Pizza/Skeleton.jsx'
 import Pizza from '../components/Pizza/index.jsx'
 import Pagination from '../components/Pagination/index.jsx'
 import { sortingTypes } from '../config/sortingTypes.js'
-import { fetchPizzas } from '../store/slices/pizzasSlice.js'
 
-const Home = ({ searchValue }) => {
+const Home = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
-  // Redux state
+  // Redux state (берём точечно, а не весь объект)
   const categoryId = useSelector((state) => state.filter.categoryId)
   const currentPage = useSelector((state) => state.filter.currentPage)
   const sortType = useSelector((state) => state.filter.sort)
-  const { items: pizzas, status } = useSelector((state) => state.pizza)
+  const searchValue = useSelector((state) => state.filter.searchValue)
+  const pizzas = useSelector((state) => state.pizza.items)
+  const status = useSelector((state) => state.pizza.status)
 
   const [categoryName, setCategoryName] = useState('Все')
 
@@ -40,31 +42,39 @@ const Home = ({ searchValue }) => {
         currentPage: Number(params.currentPage) || 1,
       }))
     }
-  }, [])
+  }, [dispatch])
 
   // Загружаем пиццы из Redux thunk
   useEffect(() => {
     dispatch(fetchPizzas({ categoryId, sortType, currentPage }))
-  }, [categoryId, sortType, currentPage])
+  }, [categoryId, sortType, currentPage, dispatch])
 
   // Синхронизация URL
   useEffect(() => {
     const queryString = qs.stringify({
       sortBy: sortType.sort,
       order: sortType.order,
-      categoryId: categoryId,
-      currentPage: currentPage,
+      categoryId,
+      currentPage,
     })
     navigate(`?${queryString}`)
-  }, [categoryId, sortType, currentPage])
+  }, [categoryId, sortType, currentPage, navigate])
 
+  // оптимизация коллбэков
   const onClickCategory = useCallback((id) => {
     dispatch(setCategoryId(id))
-  }, [])
+  }, [dispatch])
 
   const onClickSort = useCallback((sortType) => {
     dispatch(setSortType(sortType))
-  }, [])
+  }, [dispatch])
+
+  // оптимизация фильтрации
+  const filteredPizzas = useMemo(() => {
+    return pizzas.filter((pizza) =>
+      pizza.title.toLowerCase().includes(searchValue.toLowerCase())
+    )
+  }, [pizzas, searchValue])
 
   return (
     <>
@@ -82,29 +92,23 @@ const Home = ({ searchValue }) => {
           <h2>
             Что-то пошло не так <span>😕</span>
           </h2>
-          <p>
-            Не удалось получить питсы, попробуйте повторить позже.
-          </p>
+          <p>Не удалось получить пиццы, попробуйте повторить позже.</p>
         </div>
       ) : (
         <div className="content__items">
           {status === 'loading'
             ? [...new Array(12)].map((_, index) => <Skeleton key={index} />)
-            : pizzas
-                ?.filter((pizza) =>
-                  pizza.title.toLowerCase().includes(searchValue.toLowerCase()),
-                )
-                .map(({ id, title, price, imageUrl, sizes, types }) => (
-                  <Pizza
-                    key={id}
-                    id={id}
-                    title={title}
-                    price={price}
-                    image={imageUrl}
-                    sizes={sizes}
-                    types={types}
-                  />
-                ))}
+            : filteredPizzas.map(({ id, title, price, imageUrl, sizes, types }) => (
+              <Pizza
+                key={id}
+                id={id}
+                title={title}
+                price={price}
+                image={imageUrl}
+                sizes={sizes}
+                types={types}
+              />
+            ))}
         </div>
       )}
       <Pagination
