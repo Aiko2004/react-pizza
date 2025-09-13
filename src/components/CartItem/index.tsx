@@ -1,17 +1,20 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { removeProduct, incrementProduct, decrementProduct } from '../../store/slices/cartSlice.js'
-
 import { sizeValues } from '../../config/sizeValues.js'
+import { FC } from 'react'
+import { RootState } from '../../store/store'
+import { CartProduct } from '../../@types/types'
 
-const CartItem = ({ props }) => {
-  const { key, id, image, title, type, size, pizzaCount, price } = props
-  const cartProduct = useSelector((state) =>
-    state.cart.products.find((product) => product.id === id),
-  )
-  // const pizzaCount = cartProduct ? cartProduct.pizzaCount : 0
+interface CartItemProps {
+  item: CartProduct
+}
+
+const CartItem: FC<CartItemProps> = ({ item }) => {
+  const { id, key, title, price, pizzaCount, size, type, image } = item
 
   const dispatch = useDispatch()
-  const handleRemoveProduct = (key) => {
+
+  const handleRemoveProduct = (): void => {
     if (window.confirm('Вы действительно хотите удалить товар?')) {
       dispatch(removeProduct(key))
     }
@@ -34,7 +37,7 @@ const CartItem = ({ props }) => {
           onClick={() =>
             pizzaCount > 1
               ? dispatch(decrementProduct(key))
-              : handleRemoveProduct(id.key)
+              : handleRemoveProduct()
           }
         >
           -
@@ -53,7 +56,7 @@ const CartItem = ({ props }) => {
       <div className="cart__item-remove">
         <button
           className="button button--outline button--circle"
-          onClick={() => handleRemoveProduct(id.key)}
+          onClick={handleRemoveProduct}
         >
           x
         </button>

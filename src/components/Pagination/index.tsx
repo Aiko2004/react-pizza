@@ -1,8 +1,14 @@
 import ReactPaginate from 'react-paginate'
 import styles from './Pagination.module.scss'
+import { FC } from 'react'
 
-const Pagination = ({ currentPage, setCurrentPage }) => {
-  const pgRangeDisplayed = 8
+interface PaginationProps {
+  currentPage?: number
+  setCurrentPage: (selected: number) => void
+}
+
+const Pagination: FC<PaginationProps> = ({ setCurrentPage }: PaginationProps) => {
+  // const pgRangeDisplayed = 8
   return (
     <ReactPaginate
       className={styles.root}

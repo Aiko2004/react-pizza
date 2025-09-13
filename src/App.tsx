@@ -2,13 +2,13 @@ import { Routes, Route } from 'react-router-dom'
 
 import Header from './components/Header'
 import Home from './pages/Home.jsx'
-import Cart from './pages/Cart.jsx'
-import NotFound from './pages/NotFound.jsx'
+import Cart from './pages/Cart.js'
+import NotFound from './pages/NotFound.js'
 
 import './scss/app.scss'
-import { FC } from 'react'
+import { JSX } from 'react'
 
-const App = () : FC =>  {
+const App = () : JSX.Element =>  {
   return (
     <div className="wrapper">
         <Header />

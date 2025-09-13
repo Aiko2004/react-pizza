@@ -7,11 +7,11 @@ import { setCategoryId, setSortType, setCurrentPage, setFilters } from '../store
 import { fetchPizzas } from '../store/slices/pizzasSlice.js'
 
 import Categories from '../components/Categories/index.jsx'
-import Sort from '../components/Sort/index.jsx'
+import Sort from '../components/Sort/index.tsx'
 import Skeleton from '../components/Pizza/Skeleton.jsx'
 import Pizza from '../components/Pizza/index.jsx'
-import Pagination from '../components/Pagination/index.jsx'
-import { sortingTypes } from '../config/sortingTypes.js'
+import Pagination from '../components/Pagination/index.tsx'
+import { sortingTypes } from '../config/sortingTypes.ts'
 
 const Home = () => {
   const navigate = useNavigate()

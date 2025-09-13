@@ -1,7 +1,8 @@
 import emptyCartImg from '../../assets/img/empty-cart.png'
 import { Link } from 'react-router-dom'
+import { JSX } from 'react'
 
-export default function CartEmpty() {
+export default function CartEmpty(): JSX.Element {
   return (
     <div className="cart cart--empty">
       <h2>Корзина пустая <span>😕</span></h2>

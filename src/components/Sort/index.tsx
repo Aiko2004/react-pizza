@@ -1,16 +1,21 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, JSX } from 'react'
 import classnames from 'classnames'
 
-import { sortingTypes } from '../../config/sortingTypes.js'
+import { sortingTypes, SortType } from '../../config/sortingTypes.js'
 
-const Sort = ({ sortType, onClickSort }) => {
+interface SortProps {
+  sortType: SortType
+  onClickSort: (sort: SortType) => void
+}
+
+const Sort = ({ sortType, onClickSort }: SortProps): JSX.Element => {
   const [isOpen, setIsOpen] = useState(false)
-  const sortRef = useRef(null)
+  const sortRef = useRef<HTMLDivElement | null>(null)
 
   // Закрытие при клике вне
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (sortRef.current && !sortRef.current.contains(event.target)) {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (sortRef.current && !sortRef.current.contains(event.target as Node)) {
         setIsOpen(false)
       }
     }

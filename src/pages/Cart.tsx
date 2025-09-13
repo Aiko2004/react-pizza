@@ -1,14 +1,16 @@
 import { Link } from 'react-router-dom'
 
-import CartItem from '../components/CartItem/index.jsx'
+import CartItem from '../components/CartItem'
 import { useSelector, useDispatch } from 'react-redux'
 import { clearProducts, selectCartProducts, selectCartTotalPrice } from '../store/slices/cartSlice.js'
-import CartEmpty from '../components/CartEmpty/index.jsx'
+import CartEmpty from '../components/CartEmpty'
+import { JSX } from 'react'
+import { CartProduct } from '../@types/types'
 
-const Cart = () => {
+const Cart = (): JSX.Element => {
   const totalPrice = useSelector(selectCartTotalPrice)
   const dispatch = useDispatch()
-  const products = useSelector(selectCartProducts)
+  const products: CartProduct[] = useSelector(selectCartProducts)
   const handleClear = () => {
     if(window.confirm("Вы действительно хотите очистить корзину?"))
       dispatch(clearProducts())
@@ -31,10 +33,9 @@ const Cart = () => {
           </div>
         </div>
         <div className="content__items for-cart">
-          {products.map(item => {
+          {products.map((item): JSX.Element  => {
             return (
-              <CartItem key={item.key} props={item}/>
-
+              <CartItem key={item.key} item={item}/>
           )})}
         </div>
 

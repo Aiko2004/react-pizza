@@ -1,7 +1,8 @@
-import NotFoundBlock from '../components/NotFoundBlock'
+import NotFoundBlock from '../components/NotFoundBlock/index.js'
 import { Link } from 'react-router-dom'
+import { JSX } from 'react'
 
-const NotFound = () => {
+const NotFound = (): JSX.Element => {
   return (
     <>
       <NotFoundBlock />
