@@ -12,6 +12,10 @@ interface CartItemProps {
 const CartItem: FC<CartItemProps> = ({ item }) => {
   const { id, key, title, price, pizzaCount, size, type, image } = item
 
+  const cartProd = useSelector((state: RootState) =>
+    state.cart.products.find((product: CartProduct) => product.id === id),
+  )
+
   const dispatch = useDispatch()
 
   const handleRemoveProduct = (): void => {
