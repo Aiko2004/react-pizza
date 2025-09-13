@@ -1,14 +1,14 @@
-import { useState, useEffect, useRef, JSX } from 'react'
+import { useState, useEffect, useRef, JSX, FC } from 'react'
 import classnames from 'classnames'
 
 import { sortingTypes, SortType } from '../../config/sortingTypes.js'
 
 interface SortProps {
   sortType: SortType
-  onClickSort: (sort: SortType) => void
+  onClickSort: (sortType: SortType) => void
 }
 
-const Sort = ({ sortType, onClickSort }: SortProps): JSX.Element => {
+const Sort: FC<SortProps> = ({ sortType, onClickSort }: SortProps) => {
   const [isOpen, setIsOpen] = useState(false)
   const sortRef = useRef<HTMLDivElement | null>(null)
 

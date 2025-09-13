@@ -1,7 +1,7 @@
 import { Routes, Route } from 'react-router-dom'
 
 import Header from './components/Header'
-import Home from './pages/Home.jsx'
+import Home from './pages/Home.js'
 import Cart from './pages/Cart.js'
 import NotFound from './pages/NotFound.js'
 

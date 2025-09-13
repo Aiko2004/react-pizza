@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useMemo, useState } from 'react'
+import { useEffect, useCallback, useMemo, useState, JSX } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import qs from 'qs'
 import { useNavigate } from 'react-router-dom'
@@ -7,23 +7,24 @@ import { setCategoryId, setSortType, setCurrentPage, setFilters } from '../store
 import { fetchPizzas } from '../store/slices/pizzasSlice.js'
 
 import Categories from '../components/Categories/index.jsx'
-import Sort from '../components/Sort/index.tsx'
-import Skeleton from '../components/Pizza/Skeleton.jsx'
+import Sort from '../components/Sort/index'
+import Skeleton from '../components/Pizza/Skeleton'
 import Pizza from '../components/Pizza/index.jsx'
-import Pagination from '../components/Pagination/index.tsx'
-import { sortingTypes } from '../config/sortingTypes.ts'
+import Pagination from '../components/Pagination/index'
+import { sortingTypes } from '../config/sortingTypes'
+import { RootState, AppDispatch } from '../store/store'
 
-const Home = () => {
+const Home = (): JSX.Element => {
   const navigate = useNavigate()
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<AppDispatch>()
 
   // Redux state (берём точечно, а не весь объект)
-  const categoryId = useSelector((state) => state.filter.categoryId)
-  const currentPage = useSelector((state) => state.filter.currentPage)
-  const sortType = useSelector((state) => state.filter.sort)
-  const searchValue = useSelector((state) => state.filter.searchValue)
-  const pizzas = useSelector((state) => state.pizza.items)
-  const status = useSelector((state) => state.pizza.status)
+  const categoryId = useSelector((state: RootState) => state.filter.categoryId)
+  const currentPage = useSelector((state: RootState) => state.filter.currentPage)
+  const sortType = useSelector((state: RootState) => state.filter.sort)
+  const searchValue = useSelector((state: RootState) => state.filter.searchValue)
+  const pizzas = useSelector((state: RootState) => state.pizza.items)
+  const status = useSelector((state: RootState) => state.pizza.status)
 
   const [categoryName, setCategoryName] = useState('Все')
 
@@ -61,11 +62,11 @@ const Home = () => {
   }, [categoryId, sortType, currentPage, navigate])
 
   // оптимизация коллбэков
-  const onClickCategory = useCallback((id) => {
+  const onClickCategory = useCallback((id: number) => {
     dispatch(setCategoryId(id))
   }, [dispatch])
 
-  const onClickSort = useCallback((sortType) => {
+  const onClickSort = useCallback((sortType: {name:string, sort: string, order: "asc" | "desc" }) => {
     dispatch(setSortType(sortType))
   }, [dispatch])
 
@@ -82,7 +83,7 @@ const Home = () => {
         <Categories
           category={categoryId}
           onClickCategory={onClickCategory}
-          onCategoryChange={(name) => setCategoryName(name)}
+          onCategoryChange={(name: string) => setCategoryName(name)}
         />
         <Sort sortType={sortType} onClickSort={onClickSort} />
       </div>
