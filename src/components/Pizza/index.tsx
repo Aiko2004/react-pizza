@@ -1,55 +1,66 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, FC } from 'react'
 import classNames from 'classnames'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { generalTypes } from '../../config/generalTypes.js'
 import { addProduct } from '../../store/slices/cartSlice.js'
+import { RootState } from '../../store/store'
+import { CartProduct } from '../../@types/types'
 
-const Pizza = ({ id, title, image, price, sizes, types }) => {
+interface PizzaProps {
+  id: number
+  title: string
+  image: string
+  price: number
+  sizes: number[]
+  types: (0 | 1)[]   // можно уточнить как (0 | 1)[]
+}
+
+const Pizza: FC<PizzaProps> = ({ id, title, image, price, sizes, types }) => {
   const dispatch = useDispatch()
 
-  // если sizes пришёл неполный, заполняем
-  if (sizes.length !== 3) {
-    sizes = [26, null, 40]
-  }
+  // нормализация размеров
+  const normalizedSizes = sizes.length === 3 ? sizes : [26, 0, 40]
 
   const [selectedSize, setSelectedSize] = useState(0)
   const [selectedType, setSelectedType] = useState(0)
 
-  // ищем все товары с этим id (любые размеры/типы)
-  const products = useSelector((state) => state.cart.products)
-  const cartProducts = products.filter((product) => product.id === id)
+  const products = useSelector((state: RootState) => state.cart.products)
+  const cartProducts = products.filter((product: CartProduct) => product.id === id)
 
   const calculatedPrice = useMemo(() => {
     let newPrice = price
-    if (sizes[selectedSize] === 30) {
+    if (normalizedSizes[selectedSize] === 30) {
       newPrice *= 1.15
     }
-    if (sizes[selectedSize] === 40) {
+    if (normalizedSizes[selectedSize] === 40) {
       newPrice *= 1.65
     }
-    return Math.round(newPrice /10) * 10 // округлил для красоты
-  }, [price, selectedSize, sizes])
+    return Math.round(newPrice / 10) * 10
+  }, [price, selectedSize, normalizedSizes])
 
-  // общее количество этой пиццы
-  const pizzaCount = cartProducts.reduce((sum, p) => sum + p.pizzaCount, 0)
+  const pizzaCount = cartProducts.reduce(
+    (sum: number, p: CartProduct): number => sum + p.pizzaCount,
+    0
+  )
 
   const onClickAdd = () => {
-    const product = {
+    const product: CartProduct = {
       id,
+      key: `${id}_${normalizedSizes[selectedSize]}_${selectedType}`,
       title,
       price: calculatedPrice,
       image,
       type: generalTypes[selectedType],
-      size: sizes[selectedSize], // ✅ записываем не индекс, а сам размер
+      size: normalizedSizes[selectedSize],
+      pizzaCount: 1,
     }
     dispatch(addProduct(product))
   }
 
-  // мемоизация типов
   const sortedTypes = useMemo(
     () => (types || []).map((i) => generalTypes[i]),
-    [types],
+    [types]
   )
 
   return (
@@ -71,9 +82,9 @@ const Pizza = ({ id, title, image, price, sizes, types }) => {
         </ul>
 
         <ul>
-          {sizes.map(
+          {normalizedSizes.map(
             (size, i) =>
-              size && (
+              size !== 0 && (
                 <li
                   key={i}
                   className={classNames({ active: selectedSize === i })}

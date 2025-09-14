@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect, memo, useCallback } from 'react'
-import { useDebounce } from '../../hooks/useDebounce.js'
+import { useDebounce } from '../../hooks/useDebounce.ts'
 import { setSearchValue } from '../../store/slices/filterSlice.js'
 import styles from './Search.module.scss'
 import { useDispatch } from 'react-redux'

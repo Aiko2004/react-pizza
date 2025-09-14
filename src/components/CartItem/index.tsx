@@ -1,6 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { removeProduct, incrementProduct, decrementProduct } from '../../store/slices/cartSlice.js'
-import { sizeValues } from '../../config/sizeValues.js'
 import { FC } from 'react'
 import { RootState } from '../../store/store'
 import { CartProduct } from '../../@types/types'
@@ -11,7 +10,6 @@ interface CartItemProps {
 
 const CartItem: FC<CartItemProps> = ({ item }) => {
   const { id, key, title, price, pizzaCount, size, type, image } = item
-
   const cartProd = useSelector((state: RootState) =>
     state.cart.products.find((product: CartProduct) => product.id === id),
   )
@@ -32,7 +30,7 @@ const CartItem: FC<CartItemProps> = ({ item }) => {
       <div className="cart__item-info">
         <h3>{title}</h3>
         <p>
-          {type}, {sizeValues[size]} см.
+          {type}, {size} см.
         </p>
       </div>
       <div className="cart__item-count">
