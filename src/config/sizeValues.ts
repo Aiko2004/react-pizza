@@ -1,0 +1,1 @@
+export const sizeValues: number[] = [26, 30, 40]

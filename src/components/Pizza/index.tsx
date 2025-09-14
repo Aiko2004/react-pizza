@@ -2,8 +2,8 @@ import { useState, useMemo, FC } from 'react'
 import classNames from 'classnames'
 import { useSelector, useDispatch } from 'react-redux'
 
-import { generalTypes } from '../../config/generalTypes.js'
-import { addProduct } from '../../store/slices/cartSlice.js'
+import { generalTypes } from '../../config/generalTypes'
+import { addProduct } from '../../store/slices/cartSlice'
 import { RootState } from '../../store/store'
 import { CartProduct } from '../../@types/types'
 
@@ -13,7 +13,7 @@ interface PizzaProps {
   image: string
   price: number
   sizes: number[]
-  types: (0 | 1)[]   // можно уточнить как (0 | 1)[]
+  types: (0 | 1)[]  | (0)[] // можно уточнить как (0 | 1)[]
 }
 
 const Pizza: FC<PizzaProps> = ({ id, title, image, price, sizes, types }) => {

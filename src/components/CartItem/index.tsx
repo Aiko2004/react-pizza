@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { removeProduct, incrementProduct, decrementProduct } from '../../store/slices/cartSlice.js'
+import { removeProduct, incrementProduct, decrementProduct } from '../../store/slices/cartSlice'
 import { FC } from 'react'
 import { RootState } from '../../store/store'
 import { CartProduct } from '../../@types/types'

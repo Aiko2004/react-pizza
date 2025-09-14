@@ -3,12 +3,12 @@ import axios from "axios"
 
 // тип пиццы
 export interface Pizza {
-  id: string
+  id: number
   title: string
   price: number
   imageUrl: string
   sizes: number[]
-  types: string[]
+  types: (0 | 1)[] | 0[]
 }
 
 // состояние слайса

@@ -1,5 +1,5 @@
 export type SortType = {
-  name:string,
+  name: string,
   sort: string,
   order: "asc" | "desc"
 }

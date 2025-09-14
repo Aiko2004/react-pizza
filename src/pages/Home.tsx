@@ -6,13 +6,14 @@ import { useNavigate } from 'react-router-dom'
 import { setCategoryId, setSortType, setCurrentPage, setFilters } from '../store/slices/filterSlice.js'
 import { fetchPizzas } from '../store/slices/pizzasSlice.js'
 
-import Categories from '../components/Categories/index.jsx'
+import Categories from '../components/Categories'
 import Sort from '../components/Sort/index'
 import Skeleton from '../components/Pizza/Skeleton'
 import Pizza from '../components/Pizza'
 import Pagination from '../components/Pagination/index'
 import { sortingTypes } from '../config/sortingTypes'
 import { RootState, AppDispatch } from '../store/store'
+import { PizzaProps } from '../@types/types'
 
 const Home = (): JSX.Element => {
   const navigate = useNavigate()
