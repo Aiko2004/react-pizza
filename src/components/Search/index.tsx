@@ -1,10 +1,17 @@
-import { useRef, useState, useEffect, memo, useCallback } from 'react'
-import { useDebounce } from '../../hooks/useDebounce.ts'
-import { setSearchValue } from '../../store/slices/filterSlice.js'
+import { useRef, useState, useEffect, memo, useCallback, FC, JSX, SVGProps } from 'react'
+import { useDebounce } from '../../hooks/useDebounce'
+import { setSearchValue } from '../../store/slices/filterSlice'
 import styles from './Search.module.scss'
 import { useDispatch } from 'react-redux'
 
-const ClearIcon = memo(({size = 24, color = "currentColor", onClickClear, ...props}) => (
+type ClearIconProps = SVGProps<SVGSVGElement> & {
+  size?: number
+  color?: string
+  onClickClear: () => void
+}
+
+
+const ClearIcon: React.FC<ClearIconProps> = memo(({size = 24, color = "currentColor", onClickClear, ...props}: ClearIconProps) => (
   <svg
     className={styles.close}
     onClick={onClickClear}
@@ -15,6 +22,7 @@ const ClearIcon = memo(({size = 24, color = "currentColor", onClickClear, ...pro
     stroke={color}
     strokeWidth="2"
     strokeLinecap="round"
+    {...props}
   >
     <title>Очистить</title>
     <g id="cross">
@@ -24,21 +32,21 @@ const ClearIcon = memo(({size = 24, color = "currentColor", onClickClear, ...pro
   </svg>
 ))
 
-const Search = () => {
+const Search = ():JSX.Element => {
   const dispatch = useDispatch()
   const [value, setValue] = useState('')
   const debouncedValue = useDebounce(value, 500) // ждём 500 мс перед обновлением
-  const inputRef = useRef(undefined)
+  const inputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     dispatch(setSearchValue(debouncedValue)) // обновляем глобальный поиск только после паузы
-  }, [debouncedValue, setSearchValue])
+  }, [debouncedValue, dispatch])
 
   const onClickClear = useCallback(() => {
     setValue('')
     dispatch(setSearchValue(''))
     inputRef.current?.focus()
-  }, [setSearchValue])
+  }, [dispatch])
 
   return (
     <div className={styles.root}>

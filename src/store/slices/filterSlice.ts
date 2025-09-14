@@ -1,17 +1,25 @@
 import { createSlice } from '@reduxjs/toolkit'
+import { SortType } from '../../config/sortingTypes'
 
-const DEFAULT_SORT = { name: 'популярности', sort: 'rating', order: 'desc' }
+const DEFAULT_SORT: SortType = { name: 'популярности', sort: 'rating', order: 'desc' }
 
 // безопасный JSON.parse
-const safeParse = (value, fallback) => {
+const safeParse = <T>(value: string | null, fallback: T): T => {
   try {
-    return value ? JSON.parse(value) : fallback
+    return value ? (JSON.parse(value) as T) : fallback
   } catch {
     return fallback
   }
 }
 
-const initialState = {
+interface FilterState {
+  searchValue: string
+  categoryId: number
+  sort: SortType
+  currentPage: number
+}
+
+const initialState: FilterState = {
   searchValue: '',
   categoryId: Number(sessionStorage.getItem('categoryIndex')) || 0,
   sort: safeParse(sessionStorage.getItem('sortType'), DEFAULT_SORT),
@@ -44,9 +52,9 @@ const filterSlice = createSlice({
       state.sort = sort || state.sort
       state.currentPage = currentPage || state.currentPage
 
-      sessionStorage.setItem('categoryIndex', state.categoryId)
+      sessionStorage.setItem('categoryIndex', state.categoryId.toString())
       sessionStorage.setItem('sortType', JSON.stringify(state.sort))
-      sessionStorage.setItem('currentPage', state.currentPage)
+      sessionStorage.setItem('currentPage', state.currentPage.toString())
     },
   },
 })
